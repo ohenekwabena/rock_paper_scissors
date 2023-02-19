@@ -1,3 +1,5 @@
+let playerSelection = prompt("What do you choose? Rock, Paper or Scissors?");
+
 function getComputerChoice() {
   let random = Math.floor(Math.random() * 3);
   let computerChoice = "";
@@ -12,8 +14,6 @@ function getComputerChoice() {
 
   return computerChoice;
 }
-
-let playerSelection = prompt("What do you choose? Rock, Paper or Scissors?");
 
 // console.log(getComputerChoice());
 
@@ -61,3 +61,30 @@ function playRound(playerSelection, computerSelection) {
       return "That's a draw!";
   }
 }
+
+function game() {
+  let player = 0;
+  let computer = 0;
+
+  for (let i = 0; i < 5; i++) {
+    let winningChoice = playRound(playerSelection, getComputerChoice());
+
+    if (winningChoice.includes("win")) {
+      player += 1;
+    } else if (winningChoice.includes("lose")) {
+      computer += 1;
+    }
+
+    console.log(winningChoice);
+  }
+
+  if (player > computer) {
+    console.log("You win the game!");
+  } else if (player < computer) {
+    console.log("You lost to Computer. Better luck next time");
+  } else if ((player = computer)) {
+    console.log("A draw! Play again");
+  }
+}
+
+game();
