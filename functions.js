@@ -1,90 +1,120 @@
-let playerSelection = prompt("What do you choose? Rock, Paper or Scissors?");
+//create global variables
+let gameOver = false;
+let player = 0;
+let computer = 0;
+let scoreToReach = 5;
+let once = true;
+const result = document.createElement('p');
+const roundEnd = document.createElement('p');
 
-function getComputerChoice() {
-  let random = Math.floor(Math.random() * 3);
-  let computerChoice = "";
+//query html elements 
+const rock = document.querySelector('.rock');
+const paper = document.querySelector('.paper');
+const scissors = document.querySelector('.scissors');
+const playerScore = document.querySelector('.playerScore');
+const computerScore = document.querySelector('.computerScore');
+const newgame = document.querySelector('.newGame');
+const endgame = document.querySelector('.endGame');
+const display = document.querySelector('.display');
 
-  if (random === 0) {
-    computerChoice = "Rock";
-  } else if (random === 1) {
-    computerChoice = "Paper";
-  } else if (random === 2) {
-    computerChoice = "Scissors";
-  }
 
-  return computerChoice;
+//add eventListeners to buttons
+rock.addEventListener("click", () => { playRound("rock", computerChoice()) });
+paper.addEventListener("click", () => { playRound("paper", computerChoice()) });
+scissors.addEventListener("click", () => { playRound("scissors", computerChoice()) });
+endgame.addEventListener("click", endGame);
+newgame.addEventListener("click", newGame);
+
+
+//create function to generate random computer selection
+function computerChoice() {
+  let choice = 0;
+  choice = Math.floor(Math.random() * 3);
+
+  if (choice === 0) return "rock";
+  else if (choice === 1) return "paper";
+  else if (choice === 2) return "scissors";
+  else return "";
+
 }
 
-// console.log(getComputerChoice());
+function decider() {
 
-function playRound(playerSelection, computerSelection) {
-  let A = playerSelection;
-  let B = computerSelection;
+  if (player === scoreToReach || computer === scoreToReach) {
+    gameOver = true;
 
-  A = A.toLowerCase();
-  B = B.toLowerCase();
-
-  //   if (A === "rock" && B === "scissors") {
-  //     return "You win! Rock beats Scissors";
-  //   } else if (A === "rock" && B === "paper") {
-  //     return "You lose! Paper beats Rock";
-  //   } else if (A === "paper" && B === "rock") {
-  //     return "You win! Paper beats Rock";
-  //   }
-
-  switch (true) {
-    case A === "rock" && B === "paper":
-      return "You lose! Paper beats rock";
-      break;
-
-    case A === "rock" && B === "scissors":
-      return "You win! Rock beats Scissors";
-      break;
-
-    case A === "paper" && B === "rock":
-      return "You win! Paper beats rock";
-      break;
-
-    case A === "paper" && B === "scissors":
-      return "You lose! Scissors beats Paper";
-      break;
-
-    case A === "scissors" && B === "rock":
-      return "You lose! Rock beats Scissors";
-      break;
-
-    case A === "scissors" && B === "paper":
-      return "You win! Scissors beats Paper";
-      break;
-
-    default:
-      return "That's a draw!";
+    while (once) {
+      const newNode = document.createTextNode("Round ended! End game to see results");
+      roundEnd.appendChild(newNode);
+      display.appendChild(roundEnd);
+      once = false;
+    }
   }
 }
 
-function game() {
-  let player = 0;
-  let computer = 0;
+//create function to take player choice and return result
 
-  for (let i = 0; i < 5; i++) {
-    let winningChoice = playRound(playerSelection, getComputerChoice());
+function playRound(playerChoice, computerChoice) {
 
-    if (winningChoice.includes("win")) {
-      player += 1;
-    } else if (winningChoice.includes("lose")) {
-      computer += 1;
+  decider();
+
+  if (!gameOver) {
+    if ((playerChoice === "rock" && computerChoice === "scissors") || (playerChoice === "paper" && computerChoice === "rock") || (playerChoice === "scissors" && computerChoice === "paper")) {
+      player++
+      playerScore.innerHTML = `${player}`;
+      computerScore.innerHTML = `${computer}`;
     }
 
-    console.log(winningChoice);
-  }
+    else if ((computerChoice === "rock" && playerChoice === "scissors") || (computerChoice === "paper" && playerChoice === "rock") || (computerChoice === "scissors" && playerChoice === "paper")) {
+      computer++
+      playerScore.innerHTML = `${player}`;
+      computerScore.innerHTML = `${computer}`;
+    }
 
-  if (player > computer) {
-    console.log("You win the game!");
-  } else if (player < computer) {
-    console.log("You lost to Computer. Better luck next time");
-  } else if ((player = computer)) {
-    console.log("A draw! Play again");
+    else {
+      playerScore.innerHTML = `${player}`;
+      computerScore.innerHTML = `${computer}`;
+    }
   }
 }
 
-game();
+//create function to end game 
+function endGame() {
+  // gameOver = true;
+
+  roundEnd.innerHTML = "";
+  display.removeChild(roundEnd);
+
+
+  if (player > computer) {
+    const node = document.createTextNode("Player Wins!");
+    result.appendChild(node);
+    display.appendChild(result);
+  }
+
+  else if (player < computer) {
+    const node = document.createTextNode("Computer Wins!");
+    result.appendChild(node);
+    display.appendChild(result);
+  }
+
+  else {
+    const node = document.createTextNode("It's a draw!");
+    result.appendChild(node);
+    display.appendChild(result);
+  }
+}
+
+
+// create function for new game 
+function newGame() {
+  gameOver = false;
+  player = 0;
+  computer = 0;
+  once = true;
+
+  playerScore.innerHTML = `${player}`;
+  computerScore.innerHTML = `${computer}`;
+  result.innerHTML = "";
+  display.removeChild(result);
+}
